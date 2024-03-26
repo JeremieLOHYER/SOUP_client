@@ -17,7 +17,9 @@ package org.example.SOUP;
 
 public interface MusiqueReceiver extends com.zeroc.Ice.Object
 {
-    String getSongs(com.zeroc.Ice.Current current);
+    void addClient(String adress, String port, com.zeroc.Ice.Current current);
+
+    void getSongs(com.zeroc.Ice.Current current);
 
     void select(String song, com.zeroc.Ice.Current current);
 
@@ -58,15 +60,32 @@ public interface MusiqueReceiver extends com.zeroc.Ice.Object
      * @param current -
      * @return -
     **/
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_addClient(MusiqueReceiver obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_adress;
+        String iceP_port;
+        iceP_adress = istr.readString();
+        iceP_port = istr.readString();
+        inS.endReadParams();
+        obj.addClient(iceP_adress, iceP_port, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    /**
+     * @hidden
+     * @param obj -
+     * @param inS -
+     * @param current -
+     * @return -
+    **/
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getSongs(MusiqueReceiver obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
         inS.readEmptyParams();
-        String ret = obj.getSongs(current);
-        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
-        ostr.writeString(ret);
-        inS.endWriteParams(ostr);
-        return inS.setResult(ostr);
+        obj.getSongs(current);
+        return inS.setResult(inS.writeEmptyParams());
     }
 
     /**
@@ -135,6 +154,7 @@ public interface MusiqueReceiver extends com.zeroc.Ice.Object
     /** @hidden */
     final static String[] _iceOps =
     {
+        "addClient",
         "getSongs",
         "ice_id",
         "ice_ids",
@@ -161,37 +181,41 @@ public interface MusiqueReceiver extends com.zeroc.Ice.Object
         {
             case 0:
             {
-                return _iceD_getSongs(this, in, current);
+                return _iceD_addClient(this, in, current);
             }
             case 1:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return _iceD_getSongs(this, in, current);
             }
             case 2:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
             }
             case 3:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
             }
             case 4:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
             }
             case 5:
             {
-                return _iceD_pause(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 6:
             {
-                return _iceD_play(this, in, current);
+                return _iceD_pause(this, in, current);
             }
             case 7:
             {
-                return _iceD_select(this, in, current);
+                return _iceD_play(this, in, current);
             }
             case 8:
+            {
+                return _iceD_select(this, in, current);
+            }
+            case 9:
             {
                 return _iceD_stop(this, in, current);
             }

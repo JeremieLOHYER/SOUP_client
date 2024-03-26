@@ -17,22 +17,60 @@ package org.example.SOUP;
 
 public interface MusiqueReceiverPrx extends com.zeroc.Ice.ObjectPrx
 {
-    default String getSongs()
+    default void addClient(String adress, String port)
     {
-        return getSongs(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+        addClient(adress, port, com.zeroc.Ice.ObjectPrx.noExplicitContext);
     }
 
-    default String getSongs(java.util.Map<String, String> context)
+    default void addClient(String adress, String port, java.util.Map<String, String> context)
     {
-        return _iceI_getSongsAsync(context, true).waitForResponse();
+        _iceI_addClientAsync(adress, port, context, true).waitForResponse();
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.String> getSongsAsync()
+    default java.util.concurrent.CompletableFuture<Void> addClientAsync(String adress, String port)
+    {
+        return _iceI_addClientAsync(adress, port, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> addClientAsync(String adress, String port, java.util.Map<String, String> context)
+    {
+        return _iceI_addClientAsync(adress, port, context, false);
+    }
+
+    /**
+     * @hidden
+     * @param iceP_adress -
+     * @param iceP_port -
+     * @param context -
+     * @param sync -
+     * @return -
+     **/
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_addClientAsync(String iceP_adress, String iceP_port, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "addClient", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     ostr.writeString(iceP_adress);
+                     ostr.writeString(iceP_port);
+                 }, null);
+        return f;
+    }
+
+    default void getSongs()
+    {
+        getSongs(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void getSongs(java.util.Map<String, String> context)
+    {
+        _iceI_getSongsAsync(context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> getSongsAsync()
     {
         return _iceI_getSongsAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
     }
 
-    default java.util.concurrent.CompletableFuture<java.lang.String> getSongsAsync(java.util.Map<String, String> context)
+    default java.util.concurrent.CompletableFuture<Void> getSongsAsync(java.util.Map<String, String> context)
     {
         return _iceI_getSongsAsync(context, false);
     }
@@ -43,14 +81,10 @@ public interface MusiqueReceiverPrx extends com.zeroc.Ice.ObjectPrx
      * @param sync -
      * @return -
      **/
-    default com.zeroc.IceInternal.OutgoingAsync<java.lang.String> _iceI_getSongsAsync(java.util.Map<String, String> context, boolean sync)
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_getSongsAsync(java.util.Map<String, String> context, boolean sync)
     {
-        com.zeroc.IceInternal.OutgoingAsync<java.lang.String> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getSongs", null, sync, null);
-        f.invoke(true, context, null, null, istr -> {
-                     String ret;
-                     ret = istr.readString();
-                     return ret;
-                 });
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getSongs", null, sync, null);
+        f.invoke(false, context, null, null, null);
         return f;
     }
 
