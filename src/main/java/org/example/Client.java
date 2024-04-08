@@ -2,36 +2,30 @@ package org.example;//
 // Copyright (c) ZeroC, Inc. All rights reserved.
 //
 
-import com.sun.jna.StringArray;
 import com.zeroc.Ice.Communicator;
 import com.zeroc.Ice.ObjectAdapter;
 import com.zeroc.Ice.ObjectPrx;
 import com.zeroc.Ice.Util;
 import org.example.SOUP.MusiqueReceiverPrx;
-
-import java.net.*;
-import java.util.function.Consumer;
-
-import uk.co.caprica.vlcj.binding.internal.libvlc_media_player_t;
-import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
-import uk.co.caprica.vlcj.media.*;
-import uk.co.caprica.vlcj.binding.internal.libvlc_instance_t;
-import uk.co.caprica.vlcj.binding.lib.LibVlc;
-import uk.co.caprica.vlcj.player.base.ControlsApi;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
-import uk.co.caprica.vlcj.player.renderer.RendererItem;
 
-import javax.swing.*;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
-public class Client
-{
+public class Client{
 
+    private MediaPlayer mediaPlayer;
     private Communicator communicator;
     MusiqueReceiverPrx musiqueReceiver = null;
 
     public Client() {
         communicator = com.zeroc.Ice.Util.initialize();
+        mediaPlayer = new MediaPlayerFactory().mediaPlayers().newMediaPlayer();
+
+        mediaPlayer.audio().setVolume(100);
     }
 
     public void initClient(String serverAdress) {
@@ -95,58 +89,58 @@ public class Client
             throw new RuntimeException(e);
         }
     }
+
     public static void main(String[] args)
     {
         Client monClient = new Client();
 
         ImplMusiqueSender test = new ImplMusiqueSender();
 
-        test.setGetSongsCallBack(new Consumer<String>() {
-            @Override
-            public void accept(String s) {
-                System.out.println("my callBack said : \n" + s);
-            }
-        });
+        test.setGetSongsCallBack((s) -> {System.out.println("my callBack said : \n" + s);});
 
-
-
-
-//        MediaPlayer mediaSender = new MediaPlayerFactory().mediaPlayers().newMediaPlayer();
-//
-//        mediaSender.audio().setVolume(0);
-//
-//        mediaSender.media().play("D:\\musique\\Billie Eilish - No Time To Die (Audio).mp3","--sout rtp/ts://localhost:8554/");
-
-
-
-
-        MediaPlayer mediaPlayer = new MediaPlayerFactory().mediaPlayers().newMediaPlayer();
-
-        mediaPlayer.audio().setVolume(100);
-
-        mediaPlayer.media().play("rtp://localhost:8554");
-
-
-        monClient.initClient("192.168.1.6", test);
-
+        monClient.initClient("10.126.5.252", test);
 
         try {
             Thread.sleep(1000);
-            monClient.musiqueReceiver.getSongs();
+            monClient.getSongs();
 
-            monClient.musiqueReceiver.select("pop/chipichipi.mp3");
+            monClient.select("pop/blingbang.mp3");
             Thread.sleep(2000);
-            monClient.musiqueReceiver.play();
+            monClient.play();
             Thread.sleep(15000);
-            monClient.musiqueReceiver.pause();
+            monClient.pause();
             Thread.sleep(2000);
-            monClient.musiqueReceiver.play();
+            monClient.play();
             Thread.sleep(15000);
-            monClient.musiqueReceiver.stop();
+            monClient.stop();
         } catch (InterruptedException e) {
             System.out.println("je peux pas dormir");
-            monClient.musiqueReceiver.stop();
+            monClient.stop();
         }
         monClient.disconnect();
+    }
+
+
+    public void getSongs() {
+        musiqueReceiver.getSongs();
+    }
+
+    public void select(String song) {
+        musiqueReceiver.select(song);
+    }
+
+    public void play() {
+        musiqueReceiver.play();
+        mediaPlayer.media().play("rtp://localhost:8554");
+    }
+
+    public void pause() {
+        musiqueReceiver.pause();
+        mediaPlayer.controls().stop();
+    }
+
+    public void stop() {
+        musiqueReceiver.stop();
+        mediaPlayer.controls().stop();
     }
 }
