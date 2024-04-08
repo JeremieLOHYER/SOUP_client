@@ -10,18 +10,23 @@ import java.util.function.Consumer;
 
 public class ImplMusiqueSender implements MusiqueSender
 {
-    public Consumer<String> getSongsCallBack = new Consumer<String>() {
-        @Override
-        public void accept(String s) {
-            System.out.println("songs : \n" + s);
-        }
-    };
+    public Consumer<String> getSongsCallBack = (s) -> System.out.println("songs : \n" + s);
+
+    public Consumer<Integer> getCompletionCallBack = (epoch) -> System.out.println("upload completion : " + epoch);
 
     public void setGetSongsCallBack(Consumer<String> callBack) {
         getSongsCallBack = callBack;
     }
+    public void setGetCompletionCallBack(Consumer<Integer> callBack) {
+        getCompletionCallBack = callBack;
+    }
     @Override
     public void responseGetSongs(String songs, Current current) {
         getSongsCallBack.accept(songs);
+    }
+
+    @Override
+    public void responseGetCompletion(int complete, Current current) {
+
     }
 }

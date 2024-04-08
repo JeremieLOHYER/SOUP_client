@@ -19,6 +19,8 @@ public interface MusiqueSender extends com.zeroc.Ice.Object
 {
     void responseGetSongs(String songs, com.zeroc.Ice.Current current);
 
+    void responseGetCompletion(int complete, com.zeroc.Ice.Current current);
+
     /** @hidden */
     static final String[] _iceIds =
     {
@@ -61,6 +63,24 @@ public interface MusiqueSender extends com.zeroc.Ice.Object
         return inS.setResult(inS.writeEmptyParams());
     }
 
+    /**
+     * @hidden
+     * @param obj -
+     * @param inS -
+     * @param current -
+     * @return -
+    **/
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_responseGetCompletion(MusiqueSender obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        int iceP_complete;
+        iceP_complete = istr.readInt();
+        inS.endReadParams();
+        obj.responseGetCompletion(iceP_complete, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
     /** @hidden */
     final static String[] _iceOps =
     {
@@ -68,6 +88,7 @@ public interface MusiqueSender extends com.zeroc.Ice.Object
         "ice_ids",
         "ice_isA",
         "ice_ping",
+        "responseGetCompletion",
         "responseGetSongs"
     };
 
@@ -101,6 +122,10 @@ public interface MusiqueSender extends com.zeroc.Ice.Object
                 return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 4:
+            {
+                return _iceD_responseGetCompletion(this, in, current);
+            }
+            case 5:
             {
                 return _iceD_responseGetSongs(this, in, current);
             }

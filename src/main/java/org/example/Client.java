@@ -10,6 +10,10 @@ import org.example.SOUP.MusiqueReceiverPrx;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -20,6 +24,8 @@ public class Client{
     private MediaPlayer mediaPlayer;
     private Communicator communicator;
     MusiqueReceiverPrx musiqueReceiver = null;
+
+    int nbBlocs = 1;
 
     public Client() {
         communicator = com.zeroc.Ice.Util.initialize();
@@ -72,11 +78,6 @@ public class Client{
             System.out.println("feur");
         }
     }
-
-    public MusiqueReceiverPrx getMusiqueReceiver() {
-        return musiqueReceiver;
-    }
-
     public void disconnect() {
         communicator.destroy();
     }
@@ -96,27 +97,29 @@ public class Client{
 
         ImplMusiqueSender test = new ImplMusiqueSender();
 
-        test.setGetSongsCallBack((s) -> {System.out.println("my callBack said : \n" + s);});
+        test.setGetSongsCallBack((s) -> System.out.println("my callBack said : \n" + s));
+        test.setGetCompletionCallBack((val) -> System.out.println("upload : " + val / monClient.nbBlocs + "%"));
 
-        monClient.initClient("10.126.5.252", test);
+        monClient.initClient("192.168.1.46", test);
 
-        try {
-            Thread.sleep(1000);
-            monClient.getSongs();
+        new CLI(monClient).listen();
 
-            monClient.select("pop/blingbang.mp3");
-            Thread.sleep(2000);
-            monClient.play();
-            Thread.sleep(15000);
-            monClient.pause();
-            Thread.sleep(2000);
-            monClient.play();
-            Thread.sleep(15000);
-            monClient.stop();
-        } catch (InterruptedException e) {
-            System.out.println("je peux pas dormir");
-            monClient.stop();
-        }
+//        Thread.sleep(1000);
+//        monClient.getSongs();
+//
+//        monClient.upload("pop", "D:/musique/Billie Eilish - No Time To Die (Audio).mp3");
+//
+//        monClient.select("pop/Billie Eilish - No Time To Die (Audio).mp3");
+//        Thread.sleep(2000);
+//        monClient.play();
+//        Thread.sleep(15000);
+//        monClient.pause();
+//        Thread.sleep(2000);
+//        monClient.play();
+//        Thread.sleep(20000);
+//        monClient.stop();
+
+        monClient.stop();
         monClient.disconnect();
     }
 
@@ -125,12 +128,54 @@ public class Client{
         musiqueReceiver.getSongs();
     }
 
+    public void getSongsByName(String songName) {
+        musiqueReceiver.getSongsByName(songName);
+    }
+    public void getSongsByAuthor(String author) {
+        musiqueReceiver.getSongsByAuthor(author);
+    }
+
+    public void upload(String styleName, String filePath) {
+        String songName = filePath.substring(filePath.lastIndexOf("/") + 1);
+
+        // Créez un objet File pour le fichier spécifié
+        File file = new File(filePath);
+        // Obtenez la taille du fichier pour calculer le nombre de blocs nécessaires
+        long fileSize = file.length();
+        int blockSize = 8192; // Taille du bloc, vous pouvez ajuster cette valeur selon vos besoins
+        nbBlocs = (int) Math.ceil((double) fileSize / blockSize);
+
+        musiqueReceiver.prepareUpload(styleName, songName, nbBlocs);
+        // Préparez l'envoi de la chanson au serveur
+
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file))) {
+            byte[] buffer = new byte[blockSize];
+            int bytesRead;
+            int blocId = 0;
+            // Lisez le fichier par blocs et envoyez-les au serveur
+            while ((bytesRead = bis.read(buffer)) != -1) {
+                // Envoyez le bloc de données au serveur
+                musiqueReceiver.upload(blocId, buffer);
+                blocId++;
+            }
+        } catch (IOException e) {
+            // Gérez les erreurs d'E/S ici
+            e.printStackTrace();
+        }
+
+    }
+
     public void select(String song) {
         musiqueReceiver.select(song);
     }
 
     public void play() {
         musiqueReceiver.play();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         mediaPlayer.media().play("rtp://localhost:8554");
     }
 

@@ -88,6 +88,193 @@ public interface MusiqueReceiverPrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default void getSongsByName(String songName)
+    {
+        getSongsByName(songName, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void getSongsByName(String songName, java.util.Map<String, String> context)
+    {
+        _iceI_getSongsByNameAsync(songName, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> getSongsByNameAsync(String songName)
+    {
+        return _iceI_getSongsByNameAsync(songName, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> getSongsByNameAsync(String songName, java.util.Map<String, String> context)
+    {
+        return _iceI_getSongsByNameAsync(songName, context, false);
+    }
+
+    /**
+     * @hidden
+     * @param iceP_songName -
+     * @param context -
+     * @param sync -
+     * @return -
+     **/
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_getSongsByNameAsync(String iceP_songName, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getSongsByName", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     ostr.writeString(iceP_songName);
+                 }, null);
+        return f;
+    }
+
+    default void getSongsByAuthor(String author)
+    {
+        getSongsByAuthor(author, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void getSongsByAuthor(String author, java.util.Map<String, String> context)
+    {
+        _iceI_getSongsByAuthorAsync(author, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> getSongsByAuthorAsync(String author)
+    {
+        return _iceI_getSongsByAuthorAsync(author, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> getSongsByAuthorAsync(String author, java.util.Map<String, String> context)
+    {
+        return _iceI_getSongsByAuthorAsync(author, context, false);
+    }
+
+    /**
+     * @hidden
+     * @param iceP_author -
+     * @param context -
+     * @param sync -
+     * @return -
+     **/
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_getSongsByAuthorAsync(String iceP_author, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getSongsByAuthor", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     ostr.writeString(iceP_author);
+                 }, null);
+        return f;
+    }
+
+    default void prepareUpload(String style, String songName, int nbBlocs)
+    {
+        prepareUpload(style, songName, nbBlocs, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void prepareUpload(String style, String songName, int nbBlocs, java.util.Map<String, String> context)
+    {
+        _iceI_prepareUploadAsync(style, songName, nbBlocs, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> prepareUploadAsync(String style, String songName, int nbBlocs)
+    {
+        return _iceI_prepareUploadAsync(style, songName, nbBlocs, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> prepareUploadAsync(String style, String songName, int nbBlocs, java.util.Map<String, String> context)
+    {
+        return _iceI_prepareUploadAsync(style, songName, nbBlocs, context, false);
+    }
+
+    /**
+     * @hidden
+     * @param iceP_style -
+     * @param iceP_songName -
+     * @param iceP_nbBlocs -
+     * @param context -
+     * @param sync -
+     * @return -
+     **/
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_prepareUploadAsync(String iceP_style, String iceP_songName, int iceP_nbBlocs, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "prepareUpload", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     ostr.writeString(iceP_style);
+                     ostr.writeString(iceP_songName);
+                     ostr.writeInt(iceP_nbBlocs);
+                 }, null);
+        return f;
+    }
+
+    default void upload(int blocId, byte[] data)
+    {
+        upload(blocId, data, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void upload(int blocId, byte[] data, java.util.Map<String, String> context)
+    {
+        _iceI_uploadAsync(blocId, data, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> uploadAsync(int blocId, byte[] data)
+    {
+        return _iceI_uploadAsync(blocId, data, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> uploadAsync(int blocId, byte[] data, java.util.Map<String, String> context)
+    {
+        return _iceI_uploadAsync(blocId, data, context, false);
+    }
+
+    /**
+     * @hidden
+     * @param iceP_blocId -
+     * @param iceP_data -
+     * @param context -
+     * @param sync -
+     * @return -
+     **/
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_uploadAsync(int iceP_blocId, byte[] iceP_data, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "upload", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     ostr.writeInt(iceP_blocId);
+                     ostr.writeByteSeq(iceP_data);
+                 }, null);
+        return f;
+    }
+
+    default String getStyle()
+    {
+        return getStyle(com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default String getStyle(java.util.Map<String, String> context)
+    {
+        return _iceI_getStyleAsync(context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.String> getStyleAsync()
+    {
+        return _iceI_getStyleAsync(com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<java.lang.String> getStyleAsync(java.util.Map<String, String> context)
+    {
+        return _iceI_getStyleAsync(context, false);
+    }
+
+    /**
+     * @hidden
+     * @param context -
+     * @param sync -
+     * @return -
+     **/
+    default com.zeroc.IceInternal.OutgoingAsync<java.lang.String> _iceI_getStyleAsync(java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<java.lang.String> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "getStyle", null, sync, null);
+        f.invoke(true, context, null, null, istr -> {
+                     String ret;
+                     ret = istr.readString();
+                     return ret;
+                 });
+        return f;
+    }
+
     default void select(String song)
     {
         select(song, com.zeroc.Ice.ObjectPrx.noExplicitContext);

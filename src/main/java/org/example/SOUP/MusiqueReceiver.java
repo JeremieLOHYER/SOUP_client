@@ -21,6 +21,16 @@ public interface MusiqueReceiver extends com.zeroc.Ice.Object
 
     void getSongs(com.zeroc.Ice.Current current);
 
+    void getSongsByName(String songName, com.zeroc.Ice.Current current);
+
+    void getSongsByAuthor(String author, com.zeroc.Ice.Current current);
+
+    void prepareUpload(String style, String songName, int nbBlocs, com.zeroc.Ice.Current current);
+
+    void upload(int blocId, byte[] data, com.zeroc.Ice.Current current);
+
+    String getStyle(com.zeroc.Ice.Current current);
+
     void select(String song, com.zeroc.Ice.Current current);
 
     void play(com.zeroc.Ice.Current current);
@@ -95,6 +105,102 @@ public interface MusiqueReceiver extends com.zeroc.Ice.Object
      * @param current -
      * @return -
     **/
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getSongsByName(MusiqueReceiver obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_songName;
+        iceP_songName = istr.readString();
+        inS.endReadParams();
+        obj.getSongsByName(iceP_songName, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    /**
+     * @hidden
+     * @param obj -
+     * @param inS -
+     * @param current -
+     * @return -
+    **/
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getSongsByAuthor(MusiqueReceiver obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_author;
+        iceP_author = istr.readString();
+        inS.endReadParams();
+        obj.getSongsByAuthor(iceP_author, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    /**
+     * @hidden
+     * @param obj -
+     * @param inS -
+     * @param current -
+     * @return -
+    **/
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_prepareUpload(MusiqueReceiver obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        String iceP_style;
+        String iceP_songName;
+        int iceP_nbBlocs;
+        iceP_style = istr.readString();
+        iceP_songName = istr.readString();
+        iceP_nbBlocs = istr.readInt();
+        inS.endReadParams();
+        obj.prepareUpload(iceP_style, iceP_songName, iceP_nbBlocs, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    /**
+     * @hidden
+     * @param obj -
+     * @param inS -
+     * @param current -
+     * @return -
+    **/
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_upload(MusiqueReceiver obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        com.zeroc.Ice.InputStream istr = inS.startReadParams();
+        int iceP_blocId;
+        byte[] iceP_data;
+        iceP_blocId = istr.readInt();
+        iceP_data = istr.readByteSeq();
+        inS.endReadParams();
+        obj.upload(iceP_blocId, iceP_data, current);
+        return inS.setResult(inS.writeEmptyParams());
+    }
+
+    /**
+     * @hidden
+     * @param obj -
+     * @param inS -
+     * @param current -
+     * @return -
+    **/
+    static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_getStyle(MusiqueReceiver obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
+    {
+        com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
+        inS.readEmptyParams();
+        String ret = obj.getStyle(current);
+        com.zeroc.Ice.OutputStream ostr = inS.startWriteParams();
+        ostr.writeString(ret);
+        inS.endWriteParams(ostr);
+        return inS.setResult(ostr);
+    }
+
+    /**
+     * @hidden
+     * @param obj -
+     * @param inS -
+     * @param current -
+     * @return -
+    **/
     static java.util.concurrent.CompletionStage<com.zeroc.Ice.OutputStream> _iceD_select(MusiqueReceiver obj, final com.zeroc.IceInternal.Incoming inS, com.zeroc.Ice.Current current)
     {
         com.zeroc.Ice.Object._iceCheckMode(null, current.mode);
@@ -156,14 +262,19 @@ public interface MusiqueReceiver extends com.zeroc.Ice.Object
     {
         "addClient",
         "getSongs",
+        "getSongsByAuthor",
+        "getSongsByName",
+        "getStyle",
         "ice_id",
         "ice_ids",
         "ice_isA",
         "ice_ping",
         "pause",
         "play",
+        "prepareUpload",
         "select",
-        "stop"
+        "stop",
+        "upload"
     };
 
     /** @hidden */
@@ -189,35 +300,55 @@ public interface MusiqueReceiver extends com.zeroc.Ice.Object
             }
             case 2:
             {
-                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
+                return _iceD_getSongsByAuthor(this, in, current);
             }
             case 3:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
+                return _iceD_getSongsByName(this, in, current);
             }
             case 4:
             {
-                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
+                return _iceD_getStyle(this, in, current);
             }
             case 5:
             {
-                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_id(this, in, current);
             }
             case 6:
             {
-                return _iceD_pause(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ids(this, in, current);
             }
             case 7:
             {
-                return _iceD_play(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_isA(this, in, current);
             }
             case 8:
             {
-                return _iceD_select(this, in, current);
+                return com.zeroc.Ice.Object._iceD_ice_ping(this, in, current);
             }
             case 9:
             {
+                return _iceD_pause(this, in, current);
+            }
+            case 10:
+            {
+                return _iceD_play(this, in, current);
+            }
+            case 11:
+            {
+                return _iceD_prepareUpload(this, in, current);
+            }
+            case 12:
+            {
+                return _iceD_select(this, in, current);
+            }
+            case 13:
+            {
                 return _iceD_stop(this, in, current);
+            }
+            case 14:
+            {
+                return _iceD_upload(this, in, current);
             }
         }
 

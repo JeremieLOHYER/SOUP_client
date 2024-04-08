@@ -53,6 +53,42 @@ public interface MusiqueSenderPrx extends com.zeroc.Ice.ObjectPrx
         return f;
     }
 
+    default void responseGetCompletion(int complete)
+    {
+        responseGetCompletion(complete, com.zeroc.Ice.ObjectPrx.noExplicitContext);
+    }
+
+    default void responseGetCompletion(int complete, java.util.Map<String, String> context)
+    {
+        _iceI_responseGetCompletionAsync(complete, context, true).waitForResponse();
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> responseGetCompletionAsync(int complete)
+    {
+        return _iceI_responseGetCompletionAsync(complete, com.zeroc.Ice.ObjectPrx.noExplicitContext, false);
+    }
+
+    default java.util.concurrent.CompletableFuture<Void> responseGetCompletionAsync(int complete, java.util.Map<String, String> context)
+    {
+        return _iceI_responseGetCompletionAsync(complete, context, false);
+    }
+
+    /**
+     * @hidden
+     * @param iceP_complete -
+     * @param context -
+     * @param sync -
+     * @return -
+     **/
+    default com.zeroc.IceInternal.OutgoingAsync<Void> _iceI_responseGetCompletionAsync(int iceP_complete, java.util.Map<String, String> context, boolean sync)
+    {
+        com.zeroc.IceInternal.OutgoingAsync<Void> f = new com.zeroc.IceInternal.OutgoingAsync<>(this, "responseGetCompletion", null, sync, null);
+        f.invoke(false, context, null, ostr -> {
+                     ostr.writeInt(iceP_complete);
+                 }, null);
+        return f;
+    }
+
     /**
      * Contacts the remote server to verify that the object implements this type.
      * Raises a local exception if a communication error occurs.
