@@ -49,7 +49,7 @@ public class CLI {
         } else if (call(command,"upload ")) {
             //Map<String,String> data = decompose(command);
 
-            String[] data = command.substring(command.indexOf("upload ") + 7).split("°");
+            String[] data = command.substring(command.indexOf("upload ") + 7).split("\\|");
             String styleName = "unknown";
             if (data.length > 1) {
                 styleName = data[0];

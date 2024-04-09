@@ -145,7 +145,7 @@ public class Client{
         File file = new File(filePath);
         // Obtenez la taille du fichier pour calculer le nombre de blocs nécessaires
         long fileSize = file.length();
-        int blockSize = 8192 * 32; // Taille du bloc, vous pouvez ajuster cette valeur selon vos besoins
+        int blockSize = 8192 * 96; // Taille du bloc, vous pouvez ajuster cette valeur selon vos besoins
         nbBlocs = (int) Math.ceil((double) fileSize / blockSize);
 
         musiqueReceiver.prepareUpload(styleName, songName, nbBlocs);
