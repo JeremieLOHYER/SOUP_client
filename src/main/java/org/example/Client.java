@@ -98,9 +98,12 @@ public class Client{
         ImplMusiqueSender test = new ImplMusiqueSender();
 
         test.setGetSongsCallBack((s) -> System.out.println("my callBack said : \n" + s));
-        test.setGetCompletionCallBack((val) -> System.out.println("upload : " + val / monClient.nbBlocs + "%"));
+        test.setGetCompletionCallBack((val) -> {
+            double percentage = (val / (double) monClient.nbBlocs) * 100;
+            System.out.println("upload : " + String.format("%.1f", percentage) + "%");
+        });
 
-        monClient.initClient("192.168.1.46", test);
+        monClient.initClient("10.126.5.252", test);
 
         new CLI(monClient).listen();
 
@@ -142,7 +145,7 @@ public class Client{
         File file = new File(filePath);
         // Obtenez la taille du fichier pour calculer le nombre de blocs nécessaires
         long fileSize = file.length();
-        int blockSize = 8192; // Taille du bloc, vous pouvez ajuster cette valeur selon vos besoins
+        int blockSize = 8192 * 32; // Taille du bloc, vous pouvez ajuster cette valeur selon vos besoins
         nbBlocs = (int) Math.ceil((double) fileSize / blockSize);
 
         musiqueReceiver.prepareUpload(styleName, songName, nbBlocs);

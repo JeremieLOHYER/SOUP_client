@@ -5,7 +5,6 @@ package org.example;//
 import com.zeroc.Ice.Current;
 import org.example.SOUP.MusiqueSender;
 
-import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
 public class ImplMusiqueSender implements MusiqueSender
@@ -27,6 +26,6 @@ public class ImplMusiqueSender implements MusiqueSender
 
     @Override
     public void responseGetCompletion(int complete, Current current) {
-
+        getCompletionCallBack.accept(complete);
     }
 }
