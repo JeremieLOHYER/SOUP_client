@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public interface VLCAdapter {
 
-    void play();
+    void play(String address);
 
     void pause();
 

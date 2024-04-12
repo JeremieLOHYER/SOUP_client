@@ -19,13 +19,15 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-public class Client implements VLCAdapter{
+public class Client {
 
     private Communicator communicator;
     private VLCAdapter vlcAdapter;
+
+    private String serverAddress;
     MusiqueReceiverPrx musiqueReceiver = null;
 
-    int nbBlocs = 1;
+    private int nbBlocs = 1;
 
     public Client(VLCAdapter vlcAdapter) {
         communicator = com.zeroc.Ice.Util.initialize();
@@ -33,13 +35,14 @@ public class Client implements VLCAdapter{
         this.vlcAdapter = vlcAdapter;
     }
 
-    public void initClient(String serverAdress) {
-        initClient(serverAdress, null);
+    public void initClient(String serverAddress) {
+        initClient(serverAddress, null);
     }
-    public void initClient(String serverAdress, ImplMusiqueSender musiqueSenderImplementation) {
+    public void initClient(String serverAddress, ImplMusiqueSender musiqueSenderImplementation) {
         if(musiqueSenderImplementation == null) {
             musiqueSenderImplementation = new ImplMusiqueSender();
         }
+        this.serverAddress = serverAddress;
         communicator.getProperties().setProperty("Ice.Default.Package", "com.zeroc.demos.Ice.minimal");
 
         final String[] ip = {"localhost"};
@@ -61,7 +64,7 @@ public class Client implements VLCAdapter{
         System.out.println("local IP : " + ip[0]);
 
         try {
-            ObjectPrx proxy = communicator.stringToProxy("musiqueReceiver:default -h " + serverAdress + " -p 5000");
+            ObjectPrx proxy = communicator.stringToProxy("musiqueReceiver:default -h " + serverAddress + " -p 5000");
             musiqueReceiver = MusiqueReceiverPrx.checkedCast(proxy);
             System.out.println("connected");
             ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("MusiqueSender", "default -h " + ip[0] + " -p 11000");
@@ -76,6 +79,10 @@ public class Client implements VLCAdapter{
         } catch (Error e) {
             System.out.println("feur");
         }
+    }
+
+    public int getNbBlocs() {
+        return nbBlocs;
     }
     public void disconnect() {
         communicator.destroy();
@@ -98,7 +105,7 @@ public class Client implements VLCAdapter{
 
         test.setGetSongsCallBack((s) -> System.out.println("my callBack said : \n" + s));
         test.setGetCompletionCallBack((val) -> {
-            double percentage = (val / (double) monClient.nbBlocs) * 100;
+            double percentage = (val / (double) monClient.getNbBlocs()) * 100;
             System.out.println("upload : " + String.format("%.1f", percentage) + "%");
         });
 
@@ -152,37 +159,34 @@ public class Client implements VLCAdapter{
         musiqueReceiver.select(song);
     }
 
-    @Override
     public void play() {
+        vlcAdapter.play(serverAddress);
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         musiqueReceiver.play();
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        vlcAdapter.play();
     }
 
-    @Override
     public void pause() {
-        musiqueReceiver.pause();
+        vlcAdapter.pause();
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        vlcAdapter.pause();
+        musiqueReceiver.pause();
     }
 
-    @Override
     public void stop() {
-        musiqueReceiver.stop();
+        vlcAdapter.stop();
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        vlcAdapter.stop();
+        musiqueReceiver.stop();
     }
 
     static class VLCWindows implements VLCAdapter {
@@ -193,8 +197,12 @@ public class Client implements VLCAdapter{
             mediaPlayer.audio().setVolume(100);
         }
 
-        public void play() {
-            mediaPlayer.media().play("rtp://localhost:8554");
+        public void play(String address) {
+            String option = "rtp://" + getIP() + ":32470";
+
+            System.out.println("listening : " + option);
+
+            mediaPlayer.media().play(option);
         }
 
         public void pause() {
