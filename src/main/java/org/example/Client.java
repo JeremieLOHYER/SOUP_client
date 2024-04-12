@@ -19,19 +19,18 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-public class Client{
+public class Client implements VLCAdapter{
 
-    private MediaPlayer mediaPlayer;
     private Communicator communicator;
+    private VLCAdapter vlcAdapter;
     MusiqueReceiverPrx musiqueReceiver = null;
 
     int nbBlocs = 1;
 
-    public Client() {
+    public Client(VLCAdapter vlcAdapter) {
         communicator = com.zeroc.Ice.Util.initialize();
-        mediaPlayer = new MediaPlayerFactory().mediaPlayers().newMediaPlayer();
 
-        mediaPlayer.audio().setVolume(100);
+        this.vlcAdapter = vlcAdapter;
     }
 
     public void initClient(String serverAdress) {
@@ -93,7 +92,7 @@ public class Client{
 
     public static void main(String[] args)
     {
-        Client monClient = new Client();
+        Client monClient = new Client(new VLCWindows());
 
         ImplMusiqueSender test = new ImplMusiqueSender();
 
@@ -103,34 +102,17 @@ public class Client{
             System.out.println("upload : " + String.format("%.1f", percentage) + "%");
         });
 
-        monClient.initClient("10.126.5.252", test);
+        monClient.initClient("192.168.1.46", test);
 
         new CLI(monClient).listen();
-
-//        Thread.sleep(1000);
-//        monClient.getSongs();
-//
-//        monClient.upload("pop", "D:/musique/Billie Eilish - No Time To Die (Audio).mp3");
-//
-//        monClient.select("pop/Billie Eilish - No Time To Die (Audio).mp3");
-//        Thread.sleep(2000);
-//        monClient.play();
-//        Thread.sleep(15000);
-//        monClient.pause();
-//        Thread.sleep(2000);
-//        monClient.play();
-//        Thread.sleep(20000);
-//        monClient.stop();
 
         monClient.stop();
         monClient.disconnect();
     }
 
-
     public void getSongs() {
         musiqueReceiver.getSongs();
     }
-
     public void getSongsByName(String songName) {
         musiqueReceiver.getSongsByName(songName);
     }
@@ -165,13 +147,12 @@ public class Client{
             // Gérez les erreurs d'E/S ici
             e.printStackTrace();
         }
-
     }
-
     public void select(String song) {
         musiqueReceiver.select(song);
     }
 
+    @Override
     public void play() {
         musiqueReceiver.play();
         try {
@@ -179,16 +160,49 @@ public class Client{
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        mediaPlayer.media().play("rtp://localhost:8554");
+        vlcAdapter.play();
     }
 
+    @Override
     public void pause() {
         musiqueReceiver.pause();
-        mediaPlayer.controls().stop();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        vlcAdapter.pause();
     }
 
+    @Override
     public void stop() {
         musiqueReceiver.stop();
-        mediaPlayer.controls().stop();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        vlcAdapter.stop();
+    }
+
+    static class VLCWindows implements VLCAdapter {
+        private MediaPlayer mediaPlayer;
+
+        public VLCWindows() {
+            mediaPlayer = new MediaPlayerFactory().mediaPlayers().newMediaPlayer();
+            mediaPlayer.audio().setVolume(100);
+        }
+
+        public void play() {
+            mediaPlayer.media().play("rtp://localhost:8554");
+        }
+
+        public void pause() {
+            mediaPlayer.controls().stop();
+        }
+
+        public void stop() {
+            mediaPlayer.controls().stop();
+        }
     }
 }

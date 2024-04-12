@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ice-demo-java.main:jar">
+    <output-path>$PROJECT_DIR$/</output-path>
+    <root id="archive" name="SOUPclient.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="ice-demo-java.main" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.zeroc/ice/3.7.0/6680e137309ee807f890a15aa39f7dd612477fe8/ice-3.7.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.java.dev.jna/jna-platform-jpms/5.12.1/dd5c97cb2b74e2f85b708745a8c6127317b023f1/jna-platform-jpms-5.12.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.java.dev.jna/jna-jpms/5.12.1/3e4c58e97eb819867d9b8d7a3a6005b9cd9987f7/jna-jpms-5.12.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/uk.co.caprica/vlcj/4.8.2/985a60dfc18fcbac09266a3956cc61f80062e6a3/vlcj-4.8.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/uk.co.caprica/vlcj-natives/4.8.1/93be7a26a6f56467163e7be9813f004c68137b13/vlcj-natives-4.8.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
