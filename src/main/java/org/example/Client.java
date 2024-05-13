@@ -8,6 +8,8 @@ import com.zeroc.Ice.ObjectPrx;
 import com.zeroc.Ice.Util;
 import org.example.SOUP.MusiqueReceiverPrx;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
+import uk.co.caprica.vlcj.media.Media;
+import uk.co.caprica.vlcj.media.MediaRef;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 
 import java.io.BufferedInputStream;
@@ -64,7 +66,7 @@ public class Client {
         System.out.println("local IP : " + ip[0]);
 
         try {
-            ObjectPrx proxy = communicator.stringToProxy("musiqueReceiver:default -h " + serverAddress + " -p 5000");
+            ObjectPrx proxy = communicator.stringToProxy("musiqueReceiver:default -h " + serverAddress + " -p 5001");
             musiqueReceiver = MusiqueReceiverPrx.checkedCast(proxy);
             System.out.println("connected");
             ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("MusiqueSender", "default -h " + ip[0] + " -p 11000");
@@ -157,56 +159,62 @@ public class Client {
     }
     public void select(String song) {
         musiqueReceiver.select(song);
+        vlcAdapter.listen(serverAddress);
     }
 
     public void play() {
-        vlcAdapter.play(serverAddress);
+        musiqueReceiver.play();
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        musiqueReceiver.play();
+        vlcAdapter.play();
     }
 
     public void pause() {
-        vlcAdapter.pause();
+        musiqueReceiver.pause();
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        musiqueReceiver.pause();
+        vlcAdapter.pause();
     }
 
     public void stop() {
-        vlcAdapter.stop();
+        musiqueReceiver.stop();
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        musiqueReceiver.stop();
+        vlcAdapter.stop();
     }
 
     static class VLCWindows implements VLCAdapter {
-        private MediaPlayer mediaPlayer;
+
+        private final MediaPlayer mediaPlayer;
 
         public VLCWindows() {
             mediaPlayer = new MediaPlayerFactory().mediaPlayers().newMediaPlayer();
             mediaPlayer.audio().setVolume(100);
         }
 
-        public void play(String address) {
-            String option = "rtp://" + getIP() + ":32470";
+        public void listen(String address) {
+            String option = "rtsp://" + getIP() + ":32470/";
 
             System.out.println("listening : " + option);
 
             mediaPlayer.media().play(option);
         }
 
+        public void play() {
+            mediaPlayer.controls().play();
+        }
+
         public void pause() {
-            mediaPlayer.controls().stop();
+            mediaPlayer.controls().pause();
         }
 
         public void stop() {
